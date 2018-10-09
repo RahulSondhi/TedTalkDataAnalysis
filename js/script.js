@@ -24,31 +24,57 @@ var config = {
 
 $(function() {
 
-  $.ajax({
-    type: "GET",
-    url: "data/ted_main.csv",
-    success: function(data) {
-      initData(data);
-    }
+		$(window).bind('hashchange', function() {
+			startEmHisto();
+    })
+
+		startEmHisto();
+
   });
 
-});
+//////////////////////////////////////////////////////////////////////////////
 
-function initData(data) {
+function startEmHisto(){
+	$("#histo").addClass("disabled");
+	$.ajax({
+		type: "GET",
+		url: "data/ted_main.csv",
+		success: function(data) {
+			var histoList = ["#histoLanguages","#histoDuration","#histoViews","#histoComments"];
+			if(window.location.hash){
+				if(histoList.indexOf(window.location.hash) > -1){
+					initData(data,window.location.hash,20);
+				}else{
+					initData(data,"#histoLanguages",20);
+				}
+			}else{
+				initData(data,"#histoLanguages",20);
+			}
+		}
+	})
+}
+
+function weAllGood(){
+	$("#histo").removeClass("disabled");
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+function initData(data,category,ticks) {
   var margin = {
-    top: 0,
+    top: 50,
     right: 20,
     bottom: 100,
-    left: 20
+    left: 50
   };
-  var width = 100000;
-  var height = 700;
+  var width = 600;
+  var height = 600;
   var svgSize = {
     width: width,
     height: height,
     margin: margin
   }
-
+	$("#visualization").html(" ");
   var svg = d3.select("#visualization").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -56,91 +82,128 @@ function initData(data) {
     .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")");
 
-  processData(svg, svgSize, data);
+  processData(svg, svgSize, data, category,ticks);
 }
 
-function processData(svg, svgSize, data) {
+//////////////////////////////////////////////////////////////////////////////
+
+function processData(svg, svgSize, data, category, ticks) {
   var tedData = Papa.parse(data, config);
 
   for (var i = 0; i < tedData.data.length; i++) {
-    var rating = eval(tedData.data[i].ratings);
-    var talks = eval(tedData.data[i].related_talks);
-    var tags = eval(tedData.data[i].tags);
-    var languages = eval(tedData.data[i].languages);
-    tedData.data[i].ratings = rating;
-    tedData.data[i].related_talks = talks;
-    tedData.data[i].tags = tags;
-    tedData.data[i].languages = languages;
+    tedData.data[i].ratings = eval(tedData.data[i].ratings);
+    tedData.data[i].related_talks = eval(tedData.data[i].related_talks);
+    tedData.data[i].tags = eval(tedData.data[i].tags);
+    tedData.data[i].languages = eval(tedData.data[i].languages);
+		tedData.data[i].views = eval(tedData.data[i].views);
+		tedData.data[i].comments = eval(tedData.data[i].comments);
+		tedData.data[i].duration = eval(tedData.data[i].duration);
   }
 
   for (var x = 0; x < tedData.errors.length; x++) {
     tedData.data.pop();
   }
 
-  drawData(svg, svgSize, tedData.data, "Languages");
+  drawData(svg, svgSize, tedData.data, category, ticks);
 }
 
-function drawData(svg, svgSize, data, category) {
+//////////////////////////////////////////////////////////////////////////////
+
+function drawData(svg, svgSize, data, category, ticks) {
 
   switch (category) {
-    case "Languages":
+    case "#histoLanguages":
 
-      var xScale = d3.scaleBand()
-        .range([0, svgSize.width])
-        .padding(0.1);
+      var xScale = d3.scaleLinear()
+				.rangeRound([0, svgSize.width])
+				.domain([d3.min(data, function(d) {
+        	return d.languages;
+      	}), d3.max(data, function(d) {
+        	return d.languages;
+      	})
+			]);
 
-      var yScale = d3.scaleLinear()
-        .range([svgSize.height, 0]);
-
-      xScale.domain(data.map(function(d) {
-        return d.title;
-      }));
-
-      yScale.domain([0, d3.max(data, function(d) {
-        return d.languages;
-      })]);
-
-      svg.selectAll(".bar")
-        .data(data)
-        .enter()
-        .append("rect")
-        .attr("class", "bar")
-        .attr("x", function(d) {
-          return xScale(d.title);
-        })
-        .attr("width", xScale.bandwidth())
-        .attr("y", function(d) {
-          return yScale(d.languages);
-        })
-        .attr("height", function(d) {
-          return svgSize.height - yScale(d.languages);
-        })
-        .attr("fill", function() {
-          return '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
-        });
+			var histogram = d3.histogram()
+				.value(function(d){return d.languages;})
+				.domain(xScale.domain())
+				.thresholds(xScale.ticks(ticks));
 
       break;
 
-    case "Duration":
+    case "#histoDuration":
+
+		var xScale = d3.scaleLinear()
+			.rangeRound([0, svgSize.width])
+			.domain([d3.min(data, function(d) {
+				return d.duration;
+			}), d3.max(data, function(d) {
+				return d.duration;
+			})
+		]);
+
+		var histogram = d3.histogram()
+			.value(function(d){return d.duration;})
+			.domain(xScale.domain())
+			.thresholds(xScale.ticks(ticks));
 
       break;
 
-    case "Comments":
+		case "#histoViews":
 
-      break;
+		var xScale = d3.scaleLinear()
+			.rangeRound([0, svgSize.width])
+			.domain([d3.min(data, function(d) {
+				return d.views;
+			}), d3.max(data, function(d) {
+				return d.views;
+			})
+		]);
 
-    case "Tags":
+		var histogram = d3.histogram()
+			.value(function(d){return d.views;})
+			.domain(xScale.domain())
+			.thresholds(xScale.ticks(ticks));
 
-      break;
+			break;
 
-    case "NumSpeakers":
+    case "#histoComments":
 
-      break;
+		var xScale = d3.scaleLinear()
+			.rangeRound([0, svgSize.width])
+			.domain([d3.min(data, function(d) {
+				return d.comments;
+			}), d3.max(data, function(d) {
+				return d.comments;
+			})
+		]);
 
-    case "SpeakerOccupation":
+		var histogram = d3.histogram()
+			.value(function(d){return d.comments;})
+			.domain(xScale.domain())
+			.thresholds(xScale.ticks(ticks));
 
       break;
   }
+
+	var yScale = d3.scaleLinear()
+		.range([svgSize.height, 0]);
+
+	var bins = histogram(data);
+
+	yScale.domain([0, d3.max(bins, function(d) { return d.length; })]);
+
+	svg.selectAll("rect")
+		.data(bins)
+		.enter()
+		.append("rect")
+		.attr("class", "bar")
+		.attr("x", function(d) {return xScale(d.x0); })
+		.attr("y", function(d) {return yScale(d.length); })
+		.attr("width", function(d) { return xScale(d.x1) - xScale(d.x0) -1 ; })
+		.attr("height", function(d){ return svgSize.height - yScale(d.length);})
+		.attr("fill", function() {return '#' + (Math.random() * 0xFFFFFF << 0).toString(16);})
+		.on("mouseover", mouseover)
+		.on('mouseout',mouseout);
 
   // add the x Axis
   svg.append("g")
@@ -156,4 +219,28 @@ function drawData(svg, svgSize, data, category) {
   svg.append("g")
     .call(d3.axisLeft(yScale));
 
+	weAllGood();
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+function mouseover(data,index){
+
+}
+
+function mouseout(data,index){
+
+}
+
+function compareView(a, b) {
+  const genreA = a.views;
+  const genreB = b.views;
+
+  let comparison = 0;
+  if (genreA > genreB) {
+    comparison = 1;
+  } else if (genreA < genreB) {
+    comparison = -1;
+  }
+  return comparison;
 }
