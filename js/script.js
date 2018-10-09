@@ -1,25 +1,25 @@
 var config = {
-	delimiter: "",	// auto-detect
-	newline: "",	// auto-detect
-	quoteChar: '"',
-	escapeChar: '"',
-	header: true,
-	trimHeaders: false,
-	dynamicTyping: false,
-	preview: 0,
-	encoding: "",
-	worker: false,
-	comments: false,
-	step: undefined,
-	complete: undefined,
-	error: undefined,
-	download: false,
-	skipEmptyLines: false,
-	chunk: undefined,
-	fastMode: undefined,
-	beforeFirstChunk: undefined,
-	withCredentials: undefined,
-	transform: undefined
+  delimiter: "", // auto-detect
+  newline: "", // auto-detect
+  quoteChar: '"',
+  escapeChar: '"',
+  header: true,
+  trimHeaders: false,
+  dynamicTyping: false,
+  preview: 0,
+  encoding: "",
+  worker: false,
+  comments: false,
+  step: undefined,
+  complete: undefined,
+  error: undefined,
+  download: false,
+  skipEmptyLines: false,
+  chunk: undefined,
+  fastMode: undefined,
+  beforeFirstChunk: undefined,
+  withCredentials: undefined,
+  transform: undefined
 };
 
 $(function() {
@@ -32,80 +32,128 @@ $(function() {
     }
   });
 
-
 });
 
-function initData(data){
-  var margin = {top: 50, right: 50, bottom: 50, left: 50};
-  var width = 500 + margin.left + margin.right;
-  var height = 500 + margin.top + margin.bottom;
-
-	var x = d3.scaleBand()
-		.range([0,width]);
-
-	var y = d3.scaleLinear()
-		.range([height,0]);
+function initData(data) {
+  var margin = {
+    top: 0,
+    right: 20,
+    bottom: 100,
+    left: 20
+  };
+  var width = 100000;
+  var height = 700;
+  var svgSize = {
+    width: width,
+    height: height,
+    margin: margin
+  }
 
   var svg = d3.select("#visualization").append("svg")
-    .attr("width",width)
-    .attr("height",height)
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform",
-          "translate("+margin.left+","+margin.top+")");
+      "translate(" + margin.left + "," + margin.top + ")");
 
-	processData(x,y,data);
+  processData(svg, svgSize, data);
 }
 
-function processData(x,y,data){
-  var tedData = Papa.parse(data,config);
+function processData(svg, svgSize, data) {
+  var tedData = Papa.parse(data, config);
 
-  for(var i = 0; i < tedData.data.length; i++){
+  for (var i = 0; i < tedData.data.length; i++) {
     var rating = eval(tedData.data[i].ratings);
     var talks = eval(tedData.data[i].related_talks);
     var tags = eval(tedData.data[i].tags);
+    var languages = eval(tedData.data[i].languages);
     tedData.data[i].ratings = rating;
     tedData.data[i].related_talks = talks;
     tedData.data[i].tags = tags;
+    tedData.data[i].languages = languages;
   }
 
-	console.log(tedData);
-	drawData(x,y,data,"Languages")
+  for (var x = 0; x < tedData.errors.length; x++) {
+    tedData.data.pop();
+  }
+
+  drawData(svg, svgSize, tedData.data, "Languages");
 }
 
-function drawData(x,y,data,category){
+function drawData(svg, svgSize, data, category) {
 
-	switch (category) {
-		case "Languages":
+  switch (category) {
+    case "Languages":
 
-			data.forEach(function(d){
-				d.languages = +d.languages;
-			});
+      var xScale = d3.scaleBand()
+        .range([0, svgSize.width])
+        .padding(0.1);
 
-			break;
+      var yScale = d3.scaleLinear()
+        .range([svgSize.height, 0]);
 
-		case "Duration":
+      xScale.domain(data.map(function(d) {
+        return d.title;
+      }));
 
-			break;
+      yScale.domain([0, d3.max(data, function(d) {
+        return d.languages;
+      })]);
 
-		case "Views":
+      svg.selectAll(".bar")
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) {
+          return xScale(d.title);
+        })
+        .attr("width", xScale.bandwidth())
+        .attr("y", function(d) {
+          return yScale(d.languages);
+        })
+        .attr("height", function(d) {
+          return svgSize.height - yScale(d.languages);
+        })
+        .attr("fill", function() {
+          return '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+        });
 
-			break;
+      break;
 
-		case "Comments":
+    case "Duration":
 
-			break;
+      break;
 
-		case "Tags":
+    case "Comments":
 
-			break;
+      break;
 
-		case "NumSpeakers":
+    case "Tags":
 
-			break;
-			
-		case "SpeakerOccupation":
+      break;
 
-			break;
-	}
+    case "NumSpeakers":
+
+      break;
+
+    case "SpeakerOccupation":
+
+      break;
+  }
+
+  // add the x Axis
+  svg.append("g")
+    .attr("transform", "translate(0," + (svgSize.height) + ")")
+    .call(d3.axisBottom(xScale))
+    .selectAll("text")
+    .style("text-anchor", "start")
+    .attr("dx", ".8em")
+    .attr("dy", "-.15em")
+    .attr("transform", "rotate(65)");
+
+  // add the y Axis
+  svg.append("g")
+    .call(d3.axisLeft(yScale));
 
 }
