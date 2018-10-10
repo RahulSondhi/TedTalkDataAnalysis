@@ -11,3 +11,22 @@
   color: #fff;
   background-color: #000;
 }
+
+#visualization{
+  display: block;
+  margin: auto;
+}
+
+.row{
+  width: 100%;
+}
+
+body{
+  background-color: #A9A9A9;
+}
+
+#visualization svg{
+  background-color: rgba(255, 59, 63,0.4);
+  border-radius: 1rem;
+  margin-top: 20px;
+}
