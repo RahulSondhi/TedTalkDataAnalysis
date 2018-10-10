@@ -22,6 +22,8 @@ var config = {
   transform: undefined
 };
 
+var histoList = ["#histoLanguages", "#histoDuration", "#histoViews", "#histoComments"];
+
 $(function() {
 
   $(window).bind('hashchange', function() {
@@ -40,7 +42,6 @@ function startEmHisto() {
     type: "GET",
     url: "data/ted_main.csv",
     success: function(data) {
-      var histoList = ["#histoLanguages", "#histoDuration", "#histoViews", "#histoComments"];
       if (window.location.hash) {
         if (histoList.indexOf(window.location.hash) > -1) {
           initData(data, window.location.hash, 20);
@@ -227,7 +228,8 @@ function drawData(svg, svgSize, data, category, ticks) {
       return '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
     })
     .on("mouseover", mouseover)
-    .on('mouseout', mouseout);
+    .on('mouseout', mouseout)
+		.on("click",mouseclick);
 
   svg.selectAll("text")
     .data(bins)
@@ -240,13 +242,13 @@ function drawData(svg, svgSize, data, category, ticks) {
       return d.length;
     })
     .attr("x", function(d, i) {
-      return (xScale(d.x0) + ((xScale(d.x1) - xScale(d.x0))/2) );
+      return (xScale(d.x0) + (( (xScale(d.x1) - xScale(d.x0))*1.5 )/2) );
     })
     .attr("y", function(d, i) {
-      return (yScale(d.length));
+      return (yScale(d.length)*1.05);
     })
     .style("text-anchor", "middle")
-		.attr("dy","-0.8em")
+		.attr("dy","-2em")
 		.attr("fill","#ffffffff")
 		.style('opacity','0.0');
 
@@ -283,11 +285,58 @@ function drawData(svg, svgSize, data, category, ticks) {
 
 //////////////////////////////////////////////////////////////////////////////
 function mouseover(d,i){
+	var shiftX = (d3.select(this).attr("width")*1.5)-(d3.select(this).attr("width"));
+	var shiftY = (d3.select(this).attr("height")*1.05)-(d3.select(this).attr("height"));
+
 	d3.select("#histoTick"+i).style('opacity','1.0');
+
+	var curr = i;
+
+	d3.selectAll(".bar")
+		.filter(function(d,i){return i > curr;})
+		.attr("transform", 'translate('+shiftX+',0)');
+
+	d3.select(this)
+		.attr("width", function(d) {
+			return (d3.select(this).attr("width")*1.5);
+		})
+		.attr("height", function(d) {
+			return (d3.select(this).attr("height")*1.05);
+		})
+		.attr("transform", 'translate(0,-'+shiftY+')');
 }
 
 function mouseout(d,i){
+	var shift = (d3.select(this).attr("width"))-(d3.select(this).attr("width")/1.5);
+
 	d3.select("#histoTick"+i).style('opacity','0.0');
+
+	var curr = i;
+
+	d3.selectAll(".bar")
+		.filter(function(d,i){return i > curr;})
+		.attr("transform", 'translate(0,0)');
+
+	d3.select(this)
+		.attr("width", function(d) {
+			return (d3.select(this).attr("width")/1.5);
+		})
+		.attr("height", function(d) {
+			return (d3.select(this).attr("height")/1.05);
+		})
+		.attr("transform", 'translate(0,0)');
+}
+
+function mouseclick(){
+	var index = histoList.indexOf(window.location.hash);
+
+	if(index == histoList.length-1){
+		index = 0;
+	}else{
+		index++;
+	}
+
+	window.location.hash = histoList[index];
 }
 
 function compareView(a, b) {
