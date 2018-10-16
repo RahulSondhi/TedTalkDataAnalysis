@@ -46,10 +46,10 @@ function startEmHisto() {
         if (histoList.indexOf(window.location.hash) > -1) {
           initData(data, window.location.hash, 20);
         } else {
-          initData(data, "#histoLanguages", 20);
+          window.location.hash = "#histoLanguages";
         }
       } else {
-        initData(data, "#histoLanguages", 20);
+        window.location.hash = "#histoLanguages";
       }
     }
   })
