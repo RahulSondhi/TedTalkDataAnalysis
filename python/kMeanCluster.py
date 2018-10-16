@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split
+from sklearn.decomposition import PCA
 import csv
 import sys
 
@@ -52,10 +53,28 @@ else:
 
         print(test)
         plt.scatter(test[:,1], test[:,2], c=kmeans.labels_, cmap='rainbow')
-        #plt.scatter(kmeans.cluster_centers_[:,1] ,kmeans.cluster_centers_[:,2], color='black')
         
         # label the x and y axes
         plt.xlabel(''+sys.argv[1]+'', weight='bold', size='large')
         plt.ylabel(''+sys.argv[2]+'', weight='bold', size='large')
         
-        plt.show()
+        #saving kmeans pic
+        plt.savefig('kmeans.png')
+        
+        ####################################################################
+        plt.clf()
+        pca = PCA(.95)
+        pca.fit(test)
+        U, S, V = np.linalg.svd(test)
+        eigvals = S**2 / np.cumsum(S)[-1]
+        plt.figure(figsize=(8,5))
+        sing_vals = np.arange(3) + 1
+        plt.plot(sing_vals, eigvals, 'ro-', linewidth=2)
+
+        # label the x and y axes
+        plt.xlabel(''+sys.argv[1]+'', weight='bold', size='large')
+        plt.ylabel(''+sys.argv[2]+'', weight='bold', size='large')
+
+        plt.savefig('pca.png')
+
+
