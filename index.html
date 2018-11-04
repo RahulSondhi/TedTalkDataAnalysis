@@ -4,17 +4,19 @@
   <title>Ted Talk Analysis</title>
   <!-- Base -->
   <script src='js/jquery-3.3.1.min.js'></script>
+  <!-- Popper -->
+  <script src='api/Popper/popper.js'></script>
   <!-- Bootstrap -->
-  <link rel='stylesheet' href='js/BootStrap/css/bootstrap.css'>
-  <link rel='stylesheet' href='js/BootStrap/css/bootstrap.min.css'>
-  <script src='js/BootStrap/js/bootstrap.js'></script>
-  <script src='js/BootStrap/js/bootstrap.min.js'></script>
+  <link rel='stylesheet' href='api/BootStrap/css/bootstrap.css'>
+  <link rel='stylesheet' href='api/BootStrap/css/bootstrap.min.css'>
+  <script src='api/BootStrap/js/bootstrap.js'></script>
+  <script src='api/BootStrap/js/bootstrap.min.js'></script>
   <!-- D3 -->
-  <script src='js/D3/d3.js'></script>
-  <script src='js/D3/d3.min.js'></script>
+  <script src='api/D3/d3.js'></script>
+  <script src='api/D3/d3.min.js'></script>
   <!-- Parser -->
-  <script src='js/PapaParse/papaparse.js'></script>
-  <script src='js/PapaParse/papaparse.min.js'></script>
+  <script src='api/PapaParse/papaparse.js'></script>
+  <script src='api/PapaParse/papaparse.min.js'></script>
   <!--  -->
   <link rel='stylesheet' href='css/style.css'>
 </head>
@@ -27,15 +29,14 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-item nav-link active dropdown-toggle" data-toggle="dropdown" href="#" id="histo">Histogram
-            <span class="caret"></span></a>
+        <a class="nav-item nav-link active dropdown-toggle" data-toggle="dropdown" href="#" id="histo">Histogram<span class="caret"></span></a>
             <div class="dropdown-menu inverse-dropdown">
               <a class="dropdown-item" href="#histoLanguages">Languages</a>
               <a class="dropdown-item" href="#histoDuration">Duration</a>
               <a class="dropdown-item" href="#histoViews">Views</a>
               <a class="dropdown-item" href="#histoComments">Comments</a>
             </div>
-        <a class="nav-item nav-link" href="#">Coming Soon</a>
+        <a class="nav-item nav-link" href="#biSca" id="biSca">Bivariate Scatterplot</a>
       </div>
     </div>
   </nav>
@@ -43,6 +44,13 @@
   <div class="row">
     <div class="" id="visualization"></div>
   </div>
+  <div class="row">
+    <div class="" id="utilities"></div>
+  </div>
+
+  <script src='js/biSca.js'></script>
+  <!--  Add categorical later-->
+  <script src='js/histo.js'></script>
   <script src='js/script.js'></script>
 </body>
 

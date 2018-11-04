@@ -30,3 +30,13 @@ body{
   border-radius: 1rem;
   margin-top: 20px;
 }
+
+#utilities{
+  width: 100%;
+  text-align: center;
+}
+
+#xAxisChoice,
+#yAxisChoice{
+  display: inline-block;
+}
