@@ -1,4 +1,4 @@
-var BiScaList = ["comments", "duration", "filmDate", "languages", "numSpeaker", "publishDate", "views"];
+var BiScaList = ["comments", "duration", "languages", "inspiringRating", "publishDate", "views", "funnyRating", "confusingRating", "informativeRating", "unconvincingRating"];
 var defaultBiSca = "#biScacomments-views";
 //////////////////////////////////////////////////////////////////////////////
 
@@ -37,8 +37,8 @@ function makeABiScaDropdown() {
   var dropdownMenuListY = $('<div id="yAxisMenu" class="dropdown-menu"></div>');
 
   for (var i = 0; i < BiScaList.length; i++) {
-    dropdownMenuListX.append($('<a class="dropdown-item" id="xChoice' + i + '" onclick="selectCategories('+"'"+'xChoice' + i + "'" + ','+ i +')">' + BiScaList[i] + '</a>'));
-    dropdownMenuListY.append($('<a class="dropdown-item" id="yChoice' + i + '" onclick="selectCategories('+"'"+'yChoice' + i + "'" + ','+ i +')">' + BiScaList[i] + '</a>'));
+    dropdownMenuListX.append($('<a class="dropdown-item" id="xChoice' + i + '" onclick="selectCategories(' + "'" + 'xChoice' + i + "'" + ',' + i + ')">' + BiScaList[i] + '</a>'));
+    dropdownMenuListY.append($('<a class="dropdown-item" id="yChoice' + i + '" onclick="selectCategories(' + "'" + 'yChoice' + i + "'" + ',' + i + ')">' + BiScaList[i] + '</a>'));
   }
 
   xAxis.append(dropdownMenuListX);
@@ -56,9 +56,9 @@ function makeABiScaDropdown() {
   $("#utilities").append(yContainer);
 }
 
-function selectCategories(id,num) {
+function selectCategories(id, num) {
 
-  var check = ""+id+"";
+  var check = "" + id + "";
 
   if (check.includes("xChoice")) {
     $("#xAxisMenu a").each(function(index) {
@@ -95,7 +95,7 @@ function drawBiScaData(svg, svgSize, data, category) {
 
   if (categoryList.length > 2 && (BiScaList.indexOf(categoryX) > -1) && (BiScaList.indexOf(categoryY) > -1)) {
     window.location.hash = defaultBiSca;
-  }else{
+  } else {
     $("#xChoice" + BiScaList.indexOf(categoryX) + "").addClass("active");
     $("#yChoice" + BiScaList.indexOf(categoryY) + "").addClass("active");
     $("#xAxisButton").html(categoryX);
@@ -145,22 +145,6 @@ function drawBiScaData(svg, svgSize, data, category) {
         });
 
       break;
-    case "filmDate":
-
-      var xScale = d3.scaleLinear()
-        .range([0, svgSize.width])
-        .domain([0, d3.max(data, function(d) {
-          return d.film_date;
-        })]);
-
-      var xLabel = "Film Date";
-
-      svg.selectAll(".dot")
-        .attr("cx", function(d) {
-          return xScale(d.film_date);
-        });
-
-      break;
     case "languages":
 
       var xScale = d3.scaleLinear()
@@ -177,22 +161,21 @@ function drawBiScaData(svg, svgSize, data, category) {
         });
 
       break;
-    case "numSpeaker":
+      case "inspiringRating":
+        var xScale = d3.scaleLinear()
+          .range([0, svgSize.width])
+          .domain([0, d3.max(data, function(d) {
+            return d.inspiring;
+          })]);
 
-      var xScale = d3.scaleLinear()
-        .range([0, svgSize.width])
-        .domain([0, d3.max(data, function(d) {
-          return d.num_speaker;
-        })]);
+        var xLabel = "Inspiring Rating Percentage";
 
-      var xLabel = "# of Speakers"
+        svg.selectAll(".dot")
+          .attr("cx", function(d) {
+            return xScale(d.inspiring);
+          });
 
-      svg.selectAll(".dot")
-        .attr("cx", function(d) {
-          return xScale(d.num_speaker);
-        });
-
-      break;
+        break;
     case "publishDate":
 
       var xScale = d3.scaleLinear()
@@ -226,6 +209,67 @@ function drawBiScaData(svg, svgSize, data, category) {
 
       break;
 
+    case "funnyRating":
+      var xScale = d3.scaleLinear()
+        .range([0, svgSize.width])
+        .domain([0, d3.max(data, function(d) {
+          return d.funny;
+        })]);
+
+      var xLabel = "Funny Rating Percentage";
+
+      svg.selectAll(".dot")
+        .attr("cx", function(d) {
+          return xScale(d.funny);
+        });
+
+      break;
+    case "confusingRating":
+      var xScale = d3.scaleLinear()
+        .range([0, svgSize.width])
+        .domain([0, d3.max(data, function(d) {
+          return d.confusing;
+        })]);
+
+      var xLabel = "Confusing Rating Percentage";
+
+      svg.selectAll(".dot")
+        .attr("cx", function(d) {
+          return xScale(d.confusing);
+        });
+
+      break;
+    case "informativeRating":
+      var xScale = d3.scaleLinear()
+        .range([0, svgSize.width])
+        .domain([0, d3.max(data, function(d) {
+          return d.informative;
+        })]);
+
+      var xLabel = "Informative Rating Percentage";
+
+      svg.selectAll(".dot")
+        .attr("cx", function(d) {
+          return xScale(d.informative);
+        });
+
+      break;
+    case "unconvincingRating":
+      var xScale = d3.scaleLinear()
+        .range([0, svgSize.width])
+        .domain([0, d3.max(data, function(d) {
+          return d.unconvincing;
+        })]);
+
+      var xLabel = "Unconvincing Rating Percentage";
+
+      svg.selectAll(".dot")
+        .attr("cx", function(d) {
+          return xScale(d.unconvincing);
+        });
+
+      break;
+
   }
 
   switch (categoryY) {
@@ -240,9 +284,9 @@ function drawBiScaData(svg, svgSize, data, category) {
       var yLabel = "Comments";
 
       svg.selectAll(".dot")
-      .attr("cy", function(d) {
-        return yScale(d.comments);
-      });
+        .attr("cy", function(d) {
+          return yScale(d.comments);
+        });
 
       break;
     case "duration":
@@ -256,25 +300,9 @@ function drawBiScaData(svg, svgSize, data, category) {
       var yLabel = "Duration";
 
       svg.selectAll(".dot")
-      .attr("cy", function(d) {
-        return yScale(d.duration);
-      });
-
-      break;
-    case "filmDate":
-
-      var yScale = d3.scaleLinear()
-        .range([svgSize.height, 0])
-        .domain([0, d3.max(data, function(d) {
-          return d.film_date;
-        })]);
-
-      var yLabel = "Film Date";
-
-      svg.selectAll(".dot")
-      .attr("cy", function(d) {
-        return yScale(d.film_date);
-      });
+        .attr("cy", function(d) {
+          return yScale(d.duration);
+        });
 
       break;
     case "languages":
@@ -288,27 +316,26 @@ function drawBiScaData(svg, svgSize, data, category) {
       var yLabel = "# of Languages";
 
       svg.selectAll(".dot")
-      .attr("cy", function(d) {
-        return yScale(d.languages);
-      });
+        .attr("cy", function(d) {
+          return yScale(d.languages);
+        });
 
       break;
-    case "numSpeaker":
+      case "inspiringRating":
+        var yScale = d3.scaleLinear()
+          .range([svgSize.height, 0])
+          .domain([0, d3.max(data, function(d) {
+            return d.inspiring;
+          })]);
 
-      var yScale = d3.scaleLinear()
-        .range([svgSize.height, 0])
-        .domain([0, d3.max(data, function(d) {
-          return d.num_speaker;
-        })]);
+        var yLabel = "Inspiring Rating Percentage";
 
-      var yLabel = "# of Speakers"
+        svg.selectAll(".dot")
+          .attr("cy", function(d) {
+            return yScale(d.inspiring);
+          });
 
-      svg.selectAll(".dot")
-      .attr("cy", function(d) {
-        return yScale(d.num_speaker);
-      });
-
-      break;
+        break;
     case "publishDate":
 
       var yScale = d3.scaleLinear()
@@ -320,9 +347,9 @@ function drawBiScaData(svg, svgSize, data, category) {
       var yLabel = "Published Date";
 
       svg.selectAll(".dot")
-      .attr("cy", function(d) {
-        return yScale(d.published_date);
-      });
+        .attr("cy", function(d) {
+          return yScale(d.published_date);
+        });
 
       break;
 
@@ -337,10 +364,69 @@ function drawBiScaData(svg, svgSize, data, category) {
       var yLabel = "Views";
 
       svg.selectAll(".dot")
-      .attr("cy", function(d) {
-        return yScale(d.views);
-      });
+        .attr("cy", function(d) {
+          return yScale(d.views);
+        });
 
+      break;
+    case "funnyRating":
+      var yScale = d3.scaleLinear()
+        .range([svgSize.height, 0])
+        .domain([0, d3.max(data, function(d) {
+          return d.funny;
+        })]);
+
+      var yLabel = "Funny Rating Percentage";
+
+      svg.selectAll(".dot")
+        .attr("cy", function(d) {
+          return yScale(d.funny);
+        });
+      break;
+
+    case "confusingRating":
+      var yScale = d3.scaleLinear()
+        .range([svgSize.height, 0])
+        .domain([0, d3.max(data, function(d) {
+          return d.confusing;
+        })]);
+
+      var yLabel = "Confusing Rating Percentage";
+
+      svg.selectAll(".dot")
+        .attr("cy", function(d) {
+          return yScale(d.confusing);
+        });
+      break;
+
+    case "informativeRating":
+      var yScale = d3.scaleLinear()
+        .range([svgSize.height, 0])
+        .domain([0, d3.max(data, function(d) {
+          return d.informative;
+        })]);
+
+      var yLabel = "Informative Rating Percentage";
+
+      svg.selectAll(".dot")
+        .attr("cy", function(d) {
+          return yScale(d.informative);
+        });
+      break;
+
+    case "unconvincingRating":
+      var yScale = d3.scaleLinear()
+        .range([svgSize.height, 0])
+        .domain([0, d3.max(data, function(d) {
+          return d.unconvincing;
+        })]);
+
+      var yLabel = "Unconvincing Rating Percentage";
+
+      svg.selectAll(".dot")
+        .attr("cy", function(d) {
+          return yScale(d.unconvincing);
+        });
       break;
 
   }

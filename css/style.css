@@ -40,3 +40,25 @@ body{
 #yAxisChoice{
   display: inline-block;
 }
+
+.correlRect.selected {
+  stroke: #000;
+  stroke-width: 2px;
+}
+.correlAxis .domain {
+  display: none;
+}
+.correlAxis .tick text.selected {
+  font-weight: bold;
+  font-size: 1.2em;
+  fill: #47ff63;
+}
+.correlAxis .tick line.selected {
+  stroke: #47ff63;
+}
+
+.tip {
+  position: absolute;
+  font-size: .8em;
+  text-align: center;
+}

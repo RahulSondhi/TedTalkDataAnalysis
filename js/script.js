@@ -36,9 +36,9 @@ async function initSite() {
     success: async function(data) {
       var hash = window.location.hash;
       var hashCategory = hash.substring(0, 6);
-
       var info = await initData(data);
-      console.log(info)
+      console.log(info.data);
+
       switch (hashCategory) {
         case "#histo":
           startEmHisto(info.svg, info.svgSize, info.data);
@@ -46,6 +46,10 @@ async function initSite() {
 
         case "#biSca":
           startEmBiSca(info.svg, info.svgSize, info.data);
+          break;
+
+        case "#corre":
+          startEmCorrel(info.svg, info.svgSize, info.data);
           break;
 
         default:
@@ -88,6 +92,10 @@ async function initData(data) {
 async function processData(svg, svgSize, data) {
   var tedData = Papa.parse(data, config);
 
+  for (var x = 0; x < tedData.errors.length; x++) {
+    tedData.data.pop();
+  }
+
   for (var i = 0; i < tedData.data.length; i++) {
     tedData.data[i].ratings = eval(tedData.data[i].ratings);
     tedData.data[i].related_talks = eval(tedData.data[i].related_talks);
@@ -96,10 +104,37 @@ async function processData(svg, svgSize, data) {
     tedData.data[i].views = eval(tedData.data[i].views);
     tedData.data[i].comments = eval(tedData.data[i].comments);
     tedData.data[i].duration = eval(tedData.data[i].duration);
-  }
+    tedData.data[i].published_date = (new Date(eval(tedData.data[i].published_date) *1000)).getFullYear();
 
-  for (var x = 0; x < tedData.errors.length; x++) {
-    tedData.data.pop();
+    tedData.data[i].funny = 0;
+    tedData.data[i].informative = 0;
+    tedData.data[i].unconvincing = 0;
+    tedData.data[i].confusing = 0;
+    tedData.data[i].inspiring = 0;
+
+    var total = 0;
+    for(var x = 0; x < tedData.data[i].ratings.length; x++){
+      if(tedData.data[i].ratings[x].name == "Funny"){
+        tedData.data[i].funny = tedData.data[i].ratings[x].count;
+      }else if(tedData.data[i].ratings[x].name == "Confusing"){
+        tedData.data[i].confusing = tedData.data[i].ratings[x].count;
+      }else if(tedData.data[i].ratings[x].name == "Informative"){
+        tedData.data[i].informative = tedData.data[i].ratings[x].count;
+      }else if(tedData.data[i].ratings[x].name == "Unconvincing"){
+        tedData.data[i].unconvincing = tedData.data[i].ratings[x].count;
+      }else if(tedData.data[i].ratings[x].name == "Inspiring"){
+        tedData.data[i].inspiring = tedData.data[i].ratings[x].count;
+      }
+
+      total += tedData.data[i].ratings[x].count;
+    }
+
+    tedData.data[i].funny = (tedData.data[i].funny/total)*100;
+    tedData.data[i].informative = (tedData.data[i].informative/total)*100;
+    tedData.data[i].unconvincing = (tedData.data[i].unconvincing/total)*100;
+    tedData.data[i].confusing = (tedData.data[i].confusing/total)*100;
+    tedData.data[i].inspiring = (tedData.data[i].inspiring/total)*100;
+
   }
 
   var dataPacket = {

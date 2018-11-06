@@ -4,6 +4,7 @@ var histoList = ["#histoLanguages", "#histoDuration", "#histoViews", "#histoComm
 
 function startEmHisto(svg, svgSize, tedData) {
   $("#histo").addClass("disabled");
+  $("#utilities").html(" ");
 
       if (window.location.hash) {
         if (histoList.indexOf(window.location.hash) > -1) {
