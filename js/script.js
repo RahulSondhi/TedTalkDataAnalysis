@@ -52,6 +52,10 @@ async function initSite() {
           startEmCorrel(info.svg, info.svgSize, info.data);
           break;
 
+        case "#scplm":
+          startEmScplm(info.svg, info.svgSize, info.data);
+          break;
+
         default:
           startEmHisto(info.svg, info.svgSize, info.data);
           break;
@@ -80,6 +84,7 @@ async function initData(data) {
   var svg = d3.select("#visualization").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
+    .attr("id","visualizationSVG")
     .append("g")
     .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")");

@@ -1,43 +1,42 @@
-.inverse-dropdown{
+.inverse-dropdown {
   background-color: #222;
   border-color: #080808;
 }
 
-.inverse-dropdown a{
+.inverse-dropdown a {
   color: #999;
 }
 
-.inverse-dropdown a :hover{
+.inverse-dropdown a :hover {
   color: #fff;
   background-color: #000;
 }
 
-#visualization{
+#visualization {
   display: block;
   margin: auto;
 }
 
-.row{
+.row {
   width: 100%;
 }
 
-body{
+body {
   background-color: #A9A9A9;
 }
 
-#visualization svg{
-  background-color: rgba(255, 59, 63,0.4);
+#visualization svg {
+  background-color: rgba(255, 59, 63, 0.4);
   border-radius: 1rem;
   margin-top: 20px;
 }
 
-#utilities{
+#utilities {
   width: 100%;
   text-align: center;
 }
 
-#xAxisChoice,
-#yAxisChoice{
+#xAxisChoice, #yAxisChoice {
   display: inline-block;
 }
 
@@ -45,14 +44,17 @@ body{
   stroke: #000;
   stroke-width: 2px;
 }
+
 .correlAxis .domain {
   display: none;
 }
+
 .correlAxis .tick text.selected {
   font-weight: bold;
   font-size: 1.2em;
   fill: #47ff63;
 }
+
 .correlAxis .tick line.selected {
   stroke: #47ff63;
 }
@@ -61,4 +63,24 @@ body{
   position: absolute;
   font-size: .8em;
   text-align: center;
+  text-shadow: -1px -1px 1px #ffffff, -1px 0px 1px #ffffff, -1px 1px 1px #ffffff, 0px -1px 1px #ffffff, 0px 1px 1px #ffffff, 1px -1px 1px #ffffff, 1px 0px 1px #ffffff, 1px 1px 1px #ffffff;
+}
+
+.scplmAxis line {
+  stroke: #ddd;
+}
+
+.scplmAxis path {
+  display: none;
+}
+
+.scplmCell text {
+  font-weight: bold;
+  font-size: 11px;
+  text-transform: capitalize;
+}
+
+.scplmFrame {
+  fill: none;
+  stroke: #aaa;
 }
