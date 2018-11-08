@@ -56,6 +56,10 @@ async function initSite() {
           startEmScplm(info.svg, info.svgSize, info.data);
           break;
 
+        case "#pacod":
+          startEmPacod(info.svg, info.svgSize, info.data);
+          break;
+
         default:
           startEmHisto(info.svg, info.svgSize, info.data);
           break;

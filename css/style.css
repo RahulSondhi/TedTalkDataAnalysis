@@ -84,3 +84,25 @@ body {
   fill: none;
   stroke: #aaa;
 }
+
+.pacodBackground path {
+  fill: none;
+  stroke: #ddd;
+  shape-rendering: crispEdges;
+}
+
+.pacodForeground path {
+  fill: none;
+}
+
+.pacodAxis line,
+.pacodAxis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.pacodAxis text {
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+  cursor: move;
+}
