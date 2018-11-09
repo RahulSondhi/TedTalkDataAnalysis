@@ -80,7 +80,7 @@ function drawPacod(svg, svgSize, data, category) {
 
     g.append("g")
       .attr("class", "pacodAxis")
-      .each(function(d) { console.log(d,y[d]); d3.select(this).call(axis.scale(y[d])); });
+      .each(function(d) { d3.select(this).call(axis.scale(y[d])); });
 
      svg.selectAll(".dimension")
      .append("text")
@@ -99,14 +99,11 @@ function drawPacod(svg, svgSize, data, category) {
     return g.transition().duration(500);
   }
 
-  // Returns the path for a given data point.
   function path(d) {
     return line(dimensions.map(function(p) {
       return [position(p), y[p](d[p])];
     }));
   }
-
-
 
   weAllGoodPacod();
 }
