@@ -60,6 +60,22 @@ async function initSite() {
           startEmPacod(info.svg, info.svgSize, info.data);
           break;
 
+        case "#pcapl":
+          startEmPcapl(info.svg, info.svgSize, info.data);
+          break;
+
+        case "#biplo":
+          startEmBiplo(info.svg, info.svgSize, info.data);
+          break;
+
+        case "#mdsda":
+          startEmMdsda(info.svg, info.svgSize, info.data);
+          break;
+
+        case "#mdsat":
+          startEmMdsat(info.svg, info.svgSize, info.data);
+          break;
+
         default:
           startEmHisto(info.svg, info.svgSize, info.data);
           break;
@@ -88,7 +104,7 @@ async function initData(data) {
   var svg = d3.select("#visualization").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-    .attr("id","visualizationSVG")
+    .attr("id", "visualizationSVG")
     .append("g")
     .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")");
@@ -113,7 +129,7 @@ async function processData(svg, svgSize, data) {
     tedData.data[i].views = eval(tedData.data[i].views);
     tedData.data[i].comments = eval(tedData.data[i].comments);
     tedData.data[i].duration = eval(tedData.data[i].duration);
-    tedData.data[i].published_date = (new Date(eval(tedData.data[i].published_date) *1000)).getFullYear();
+    tedData.data[i].published_date = (new Date(eval(tedData.data[i].published_date) * 1000)).getFullYear();
 
     tedData.data[i].funny = 0;
     tedData.data[i].informative = 0;
@@ -122,27 +138,27 @@ async function processData(svg, svgSize, data) {
     tedData.data[i].inspiring = 0;
 
     var total = 0;
-    for(var x = 0; x < tedData.data[i].ratings.length; x++){
-      if(tedData.data[i].ratings[x].name == "Funny"){
+    for (var x = 0; x < tedData.data[i].ratings.length; x++) {
+      if (tedData.data[i].ratings[x].name == "Funny") {
         tedData.data[i].funny = tedData.data[i].ratings[x].count;
-      }else if(tedData.data[i].ratings[x].name == "Confusing"){
+      } else if (tedData.data[i].ratings[x].name == "Confusing") {
         tedData.data[i].confusing = tedData.data[i].ratings[x].count;
-      }else if(tedData.data[i].ratings[x].name == "Informative"){
+      } else if (tedData.data[i].ratings[x].name == "Informative") {
         tedData.data[i].informative = tedData.data[i].ratings[x].count;
-      }else if(tedData.data[i].ratings[x].name == "Unconvincing"){
+      } else if (tedData.data[i].ratings[x].name == "Unconvincing") {
         tedData.data[i].unconvincing = tedData.data[i].ratings[x].count;
-      }else if(tedData.data[i].ratings[x].name == "Inspiring"){
+      } else if (tedData.data[i].ratings[x].name == "Inspiring") {
         tedData.data[i].inspiring = tedData.data[i].ratings[x].count;
       }
 
       total += tedData.data[i].ratings[x].count;
     }
 
-    tedData.data[i].funny = (tedData.data[i].funny/total)*100;
-    tedData.data[i].informative = (tedData.data[i].informative/total)*100;
-    tedData.data[i].unconvincing = (tedData.data[i].unconvincing/total)*100;
-    tedData.data[i].confusing = (tedData.data[i].confusing/total)*100;
-    tedData.data[i].inspiring = (tedData.data[i].inspiring/total)*100;
+    tedData.data[i].funny = (tedData.data[i].funny / total) * 100;
+    tedData.data[i].informative = (tedData.data[i].informative / total) * 100;
+    tedData.data[i].unconvincing = (tedData.data[i].unconvincing / total) * 100;
+    tedData.data[i].confusing = (tedData.data[i].confusing / total) * 100;
+    tedData.data[i].inspiring = (tedData.data[i].inspiring / total) * 100;
 
   }
 

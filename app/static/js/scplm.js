@@ -1,8 +1,9 @@
 var scplmCols = ["inspiring", "views", "languages", "comments", "confusing"];
-var reroute = "#scplm";
 //////////////////////////////////////////////////////////////////////////////
 
 function startEmScplm(svg, svgSize, tedData) {
+  var reroute = "#scplm";
+  
   $("#scplm").addClass("disabled");
   $("#utilities").html(" ");
   d3.select("#visualization").append("div").attr("class", "tip").style("display", "none");

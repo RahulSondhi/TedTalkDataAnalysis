@@ -1,9 +1,10 @@
 var cols = ["inspiring", "informative", "funny", "views", "comments", "languages", "duration", "published_date", "confusing", "unconvincing"];
 var sortingArr = ["inspiring", "informative", "funny", "views", "comments", "languages", "duration", "published_date", "confusing", "unconvincing"];
-var redirect = "#pacod";
 //////////////////////////////////////////////////////////////////////////////
 
 function startEmPacod(svg, svgSize, tedData) {
+  var redirect = "#pacod";
+
   $("#pacod").addClass("disabled");
   $("#utilities").html(" ");
 
@@ -52,8 +53,6 @@ function drawPacod(svg, svgSize, data, category) {
   dimensions.sort(function(a, b){
         return sortingArr.indexOf(a) - sortingArr.indexOf(b);
     });
-
-  console.log(y,dimensions)
 
   var background = svg.append("g")
     .attr("class", "pacodBackground")
