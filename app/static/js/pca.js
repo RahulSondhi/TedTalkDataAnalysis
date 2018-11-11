@@ -1,6 +1,6 @@
-var PCA = function(){
+var PCAB = function(){
   this.scale = scale;
-  this.pca = pca;
+  this.pcab = pcab;
 
   function mean(X){
     // mean by col
@@ -374,7 +374,7 @@ var PCA = function(){
     return { U:u, S:q, V:v }
   }
 
-  function pca(X,npc){
+  function pcab(X,npc){
     var USV = svd(X);
     var U = USV.U;
     var S = diag(USV.S);

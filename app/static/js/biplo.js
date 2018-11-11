@@ -63,11 +63,11 @@ function drawBiplo(svg, svgSize, data, category) {
       return shit.map(parseFloat);
   });
 
-  var pca = new PCA();
-  matrix = pca.scale(matrix, true, true);
+  var pcab = new PCAB();
+  matrix = pcab.scale(matrix, true, true);
 
 
-  pc = pca.pca(matrix, 2)
+  pc = pcab.pcab(matrix, 2)
 
   var A = pc[0];
   var B = pc[1];
