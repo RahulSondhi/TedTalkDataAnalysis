@@ -10,7 +10,14 @@ function startEmBiSca(svg, svgSize, tedData) {
     makeABiScaDropdown();
     var hash = window.location.hash;
     if (hash.includes("#biSca") && hash != "#biSca") {
-      drawBiScaData(svg, svgSize, tedData.data, window.location.hash);
+
+      var categoryList = (hash.substring(6)).split("-");
+
+      var categoryX = categoryList[0];
+      var categoryY = categoryList[1];
+
+      drawBiScaData(svg, svgSize, tedData.data, categoryX, categoryY, false);
+
     } else {
       window.location.hash = defaultBiSca;
     }
@@ -84,29 +91,24 @@ function selectCategories(id, num) {
 
 //////////////////////////////////////////////////////////////////////////////
 
-function drawBiScaData(svg, svgSize, data, category) {
+function drawBiScaData(svg, svgSize, data, categoryX, categoryY, remote) {
 
-  var categoryList = (category.substring(6)).split("-");
-
-  var categoryX = categoryList[0];
-  var categoryY = categoryList[1];
-
-
-
-  if (categoryList.length > 2 && (BiScaList.indexOf(categoryX) > -1) && (BiScaList.indexOf(categoryY) > -1)) {
+  if ((BiScaList.indexOf(categoryX) == -1) || (BiScaList.indexOf(categoryY) == -1)) {
     window.location.hash = defaultBiSca;
   } else {
-    $("#xChoice" + BiScaList.indexOf(categoryX) + "").addClass("active");
-    $("#yChoice" + BiScaList.indexOf(categoryY) + "").addClass("active");
-    $("#xAxisButton").html(categoryX);
-    $("#yAxisButton").html(categoryY);
+    if (remote == false) {
+      $("#xChoice" + BiScaList.indexOf(categoryX) + "").addClass("active");
+      $("#yChoice" + BiScaList.indexOf(categoryY) + "").addClass("active");
+      $("#xAxisButton").html(categoryX);
+      $("#yAxisButton").html(categoryY);
+    }
   }
 
   svg.selectAll(".dot")
     .data(data)
     .enter()
     .append("circle")
-    .attr("class", "dot")
+    .attr("class", "dot dataFilter")
     .attr("r", 5)
     .attr("fill", function() {
       return '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
@@ -161,26 +163,26 @@ function drawBiScaData(svg, svgSize, data, category) {
         });
 
       break;
-      case "inspiringRating":
-        var xScale = d3.scaleLinear()
-          .range([0, svgSize.width])
-          .domain([0, d3.max(data, function(d) {
-            return d.inspiring;
-          })]);
+    case "inspiringRating":
+      var xScale = d3.scaleLinear()
+        .range([0, svgSize.width])
+        .domain([0, d3.max(data, function(d) {
+          return d.inspiring;
+        })]);
 
-        var xLabel = "Inspiring Rating Percentage";
+      var xLabel = "Inspiring Rating Percentage";
 
-        svg.selectAll(".dot")
-          .attr("cx", function(d) {
-            return xScale(d.inspiring);
-          });
+      svg.selectAll(".dot")
+        .attr("cx", function(d) {
+          return xScale(d.inspiring);
+        });
 
-        break;
+      break;
     case "publishDate":
 
       var xScale = d3.scaleLinear()
         .range([0, svgSize.width])
-        .domain([0, d3.max(data, function(d) {
+        .domain([2006, d3.max(data, function(d) {
           return d.published_date;
         })]);
 
@@ -321,26 +323,26 @@ function drawBiScaData(svg, svgSize, data, category) {
         });
 
       break;
-      case "inspiringRating":
-        var yScale = d3.scaleLinear()
-          .range([svgSize.height, 0])
-          .domain([0, d3.max(data, function(d) {
-            return d.inspiring;
-          })]);
+    case "inspiringRating":
+      var yScale = d3.scaleLinear()
+        .range([svgSize.height, 0])
+        .domain([0, d3.max(data, function(d) {
+          return d.inspiring;
+        })]);
 
-        var yLabel = "Inspiring Rating Percentage";
+      var yLabel = "Inspiring Rating Percentage";
 
-        svg.selectAll(".dot")
-          .attr("cy", function(d) {
-            return yScale(d.inspiring);
-          });
+      svg.selectAll(".dot")
+        .attr("cy", function(d) {
+          return yScale(d.inspiring);
+        });
 
-        break;
+      break;
     case "publishDate":
 
       var yScale = d3.scaleLinear()
         .range([svgSize.height, 0])
-        .domain([0, d3.max(data, function(d) {
+        .domain([2006, d3.max(data, function(d) {
           return d.published_date;
         })]);
 

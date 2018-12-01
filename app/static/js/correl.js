@@ -1,21 +1,20 @@
-var cols = ["comments", "duration", "languages", "published_date", "views", "inspiring", "funny", "confusing", "informative", "unconvincing"];
+var dataCols = ["comments", "duration", "languages", "views", "inspiring", "funny", "confusing", "informative", "unconvincing"];
 
 //////////////////////////////////////////////////////////////////////////////
 
-function startEmCorrel(svg, svgSize, tedData) {
+async function startEmCorrel(svg, svgSize, tedData) {
   $("#corre").addClass("disabled");
   $("#utilities").html(" ");
-  d3.select("#visualization").append("div").attr("class", "tip").style("display", "none");
 
   if (window.location.hash) {
 
     var hash = window.location.hash;
     if (hash == "#corre") {
-      drawCorrel(svg, svgSize, tedData.data, window.location.hash);
+      var data = jQuery.extend(true, {}, JSON.parse(JSON.stringify(tedData.data)));
+      drawCorrel(svg, svgSize, data);
     } else {
       window.location.hash = "#corre";
     }
-
   } else {
     window.location.hash = "#corre";
   }
@@ -24,9 +23,10 @@ function startEmCorrel(svg, svgSize, tedData) {
 
 //////////////////////////////////////////////////////////////////////////////
 
-function drawCorrel(svg, svgSize, data, category) {
+function drawCorrel(svg, svgSize, data) {
+  d3.select("#visualization").append("div").attr("class", "tip").style("display", "none");
 
-  var correlationMatrix = jz.arr.correlationMatrix(data, cols);
+  var correlationMatrix = jz.arr.correlationMatrix(data, dataCols);
   var extent = d3.extent(correlationMatrix.map(function(d) {
     return d.correlation;
   }).filter(function(d) {
@@ -56,10 +56,10 @@ function drawCorrel(svg, svgSize, data, category) {
     .domain([extent[0], 0, extent[1]]);
 
   var xAxis = d3.axisTop(yRange).tickFormat(function(d, i) {
-    return cols[i];
+    return dataCols[i];
   });
   var yAxis = d3.axisLeft(xRange).tickFormat(function(d, i) {
-    return cols[i];
+    return dataCols[i];
   });
 
   svg.append("g")
@@ -92,7 +92,7 @@ function drawCorrel(svg, svgSize, data, category) {
     .style("opacity", 1);
 
 
-  d3.selectAll("rect")
+  d3.selectAll(".correlRect")
     .on("mouseover", function(d) {
 
       d3.select(this).classed("selected", true);

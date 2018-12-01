@@ -23,65 +23,74 @@ var config = {
 };
 
 $(function() {
-  $(window).bind('hashchange', initSite)
 
-  initSite();
+  $(window).bind('hashchange', initSite).trigger('hashchange');
+
 });
-
 
 async function initSite() {
   $.ajax({
     type: "GET",
+    cache: true,
     url: "/static/data/ted_main.csv",
     success: async function(data) {
-      var hash = window.location.hash;
-      var hashCategory = hash.substring(0, 6);
       var info = await initData(data);
-      console.log(info.data);
 
-      switch (hashCategory) {
-        case "#histo":
-          startEmHisto(info.svg, info.svgSize, info.data);
-          break;
+      reMap(info);
 
-        case "#biSca":
-          startEmBiSca(info.svg, info.svgSize, info.data);
-          break;
-
-        case "#corre":
-          startEmCorrel(info.svg, info.svgSize, info.data);
-          break;
-
-        case "#scplm":
-          startEmScplm(info.svg, info.svgSize, info.data);
-          break;
-
-        case "#pacod":
-          startEmPacod(info.svg, info.svgSize, info.data);
-          break;
-
-        case "#pcapl":
-          startEmPcapl(info.svg, info.svgSize, info.data);
-          break;
-
-        case "#biplo":
-          startEmBiplo(info.svg, info.svgSize, info.data);
-          break;
-
-        case "#mdsda":
-          startEmMdsda(info.svg, info.svgSize, info.data);
-          break;
-
-        case "#mdsat":
-          startEmMdsat(info.svg, info.svgSize, info.data);
-          break;
-
-        default:
-          startEmHisto(info.svg, info.svgSize, info.data);
-          break;
-      }
     }
   })
+}
+
+function reMap(info){
+  var hash = window.location.hash;
+  var hashCategory = hash.substring(0, 6);
+
+  switch (hashCategory) {
+    case "#histo":
+      startEmHisto(info.svg, info.svgSize, info.data);
+      break;
+
+    case "#biSca":
+      startEmBiSca(info.svg, info.svgSize, info.data);
+      break;
+
+    case "#corre":
+      startEmCorrel(info.svg, info.svgSize, info.data);
+      break;
+
+    case "#scplm":
+      startEmScplm(info.svg, info.svgSize, info.data);
+      break;
+
+    case "#pacod":
+      startEmPacod(info.svg, info.svgSize, info.data);
+      break;
+
+    case "#pcapl":
+      startEmPcapl(info.svg, info.svgSize, info.data);
+      break;
+
+    case "#biplo":
+      startEmBiplo(info.svg, info.svgSize, info.data);
+      break;
+
+    case "#mdsda":
+      startEmMdsda(info.svg, info.svgSize, info.data);
+      break;
+
+    case "#mdsat":
+      startEmMdsat(info.svg, info.svgSize, info.data);
+      break;
+
+    case "#dashb":
+      startEmDashb(info.data);
+      break;
+
+    default:
+      startEmHisto(info.svg, info.svgSize, info.data);
+      break;
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -101,6 +110,7 @@ async function initData(data) {
     margin: margin
   }
   $("#visualization").html(" ");
+  $("#dashboard").html(" ");
   var svg = d3.select("#visualization").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -129,7 +139,7 @@ async function processData(svg, svgSize, data) {
     tedData.data[i].views = eval(tedData.data[i].views);
     tedData.data[i].comments = eval(tedData.data[i].comments);
     tedData.data[i].duration = eval(tedData.data[i].duration);
-    tedData.data[i].published_date = (new Date(eval(tedData.data[i].published_date) * 1000)).getFullYear();
+    tedData.data[i].published_date = (new Date(eval(tedData.data[i].published_date) * 1000));
 
     tedData.data[i].funny = 0;
     tedData.data[i].informative = 0;
@@ -141,17 +151,22 @@ async function processData(svg, svgSize, data) {
     for (var x = 0; x < tedData.data[i].ratings.length; x++) {
       if (tedData.data[i].ratings[x].name == "Funny") {
         tedData.data[i].funny = tedData.data[i].ratings[x].count;
+        total += tedData.data[i].ratings[x].count;
       } else if (tedData.data[i].ratings[x].name == "Confusing") {
         tedData.data[i].confusing = tedData.data[i].ratings[x].count;
+        total += tedData.data[i].ratings[x].count;
       } else if (tedData.data[i].ratings[x].name == "Informative") {
         tedData.data[i].informative = tedData.data[i].ratings[x].count;
+        total += tedData.data[i].ratings[x].count;
       } else if (tedData.data[i].ratings[x].name == "Unconvincing") {
         tedData.data[i].unconvincing = tedData.data[i].ratings[x].count;
+        total += tedData.data[i].ratings[x].count;
       } else if (tedData.data[i].ratings[x].name == "Inspiring") {
         tedData.data[i].inspiring = tedData.data[i].ratings[x].count;
+        total += tedData.data[i].ratings[x].count;
       }
 
-      total += tedData.data[i].ratings[x].count;
+      // total += tedData.data[i].ratings[x].count;
     }
 
     tedData.data[i].funny = (tedData.data[i].funny / total) * 100;
@@ -162,10 +177,19 @@ async function processData(svg, svgSize, data) {
 
   }
 
+  var tedDataClean = {data:[]};
+
+  for (var i = 0; i < 1000; i++) {
+    if(tedData.data[i].languages != 0){
+      tedDataClean.data.push(tedData.data[i]);
+    }
+  }
+
   var dataPacket = {
     svg: svg,
     svgSize: svgSize,
-    data: tedData
+    data: tedDataClean
   }
+
   return dataPacket;
 }

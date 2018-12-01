@@ -25,10 +25,27 @@ body {
   background-color: #A9A9A9;
 }
 
-#visualization svg {
+#dashboard svg, #visualization svg {
   background-color: rgba(255, 59, 63, 0.4);
   border-radius: 1rem;
   margin-top: 20px;
+}
+
+
+#dashboard {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.rowContainer{
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+}
+
+#dashboard svg{
+  margin-left: 20px;
 }
 
 #utilities {
@@ -95,8 +112,7 @@ body {
   fill: none;
 }
 
-.pacodAxis line,
-.pacodAxis path {
+.pacodAxis line, .pacodAxis path {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
