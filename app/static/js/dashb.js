@@ -39,16 +39,18 @@ function drawDashb(data) {
   var row0 = $('<div id="row0" class="rowContainer"></div>');
   var row1 = $('<div id="row1" class="rowContainer"></div>');
   var row2 = $('<div id="row2" class="rowContainer"></div>');
+  var row3 = $('<div id="row3" class="colContainer"></div>');
 
   row0.append(timeline);
   row1.append(correl);
   row1.append(xAxisHisto);
   row2.append(yAxisHisto);
   row2.append(biSca);
+  row3.append(row1);
+  row3.append(row2);
 
   $("#dashboard").append(row0);
-  $("#dashboard").append(row1);
-  $("#dashboard").append(row2);
+  $("#dashboard").append(row3);
 
   var marginT = {
     top: 70,
@@ -56,8 +58,8 @@ function drawDashb(data) {
     bottom: 70,
     left: 70
   };
-  var widthT = 1160;
-  var heightT = 500;
+  var widthT = 1000;
+  var heightT = 1200;
   var svgSizeT = {
     width: widthT,
     height: heightT,
@@ -70,8 +72,8 @@ function drawDashb(data) {
     bottom: 70,
     left: 70
   };
-  var width = 500;
-  var height = 500;
+  var width = 600;
+  var height = 525;
   var svgSize = {
     width: width,
     height: height,
@@ -131,7 +133,7 @@ function drawDashb(data) {
 
   d3.selectAll(".correlRect")
     .on("click", function(d) {
-
+      $(".selection").css("opacity",0);
       $("#yAxisHisto").html(" ");
       $("#xAxisHisto").html(" ");
       $("#biScaDash").html(" ");

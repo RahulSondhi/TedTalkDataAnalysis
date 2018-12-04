@@ -35,13 +35,23 @@ body {
 #dashboard {
   margin: auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .rowContainer{
   display: flex;
   flex-direction: row;
   margin: auto;
+}
+
+.colContainer{
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+
+#row1{
+
 }
 
 #dashboard svg{

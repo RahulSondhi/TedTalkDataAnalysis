@@ -308,7 +308,12 @@ function drawHistoData(svg, svgSize, data, category, ticks, remote, timeline) {
           [0, 0],
           [svgSize.width, svgSize.height]
         ])
+        .on("start",brushshow)
         .on("end", brushended));
+
+    function brushshow(){
+      $(".selection").css("opacity",0.3);
+    }
 
     function brushended() {
       if (!d3.event.sourceEvent) return; // Only transition after input.
